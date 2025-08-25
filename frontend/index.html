@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Negocios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/bootstrap-dark-theme.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="d-flex align-items-center">
+                    <button class="menu-toggle me-3" id="menu-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h1 class="header-title mb-0">Gestión de Negocios</h1>
+                </div>
+                <div class="header-user">
+                    <span id="user-info">Bienvenido</span>
+                    <button id="logout-btn" class="btn btn-outline-light btn-sm ms-2" style="display: none;">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Screen -->
+        <div id="login-screen" class="login-screen">
+            <div class="login-container">
+                <div class="login-card">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="username">Usuario</label>
+                            <input type="text" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                    </form>
+                    <div class="login-info">
+                        <p><strong>Usuario por defecto:</strong></p>
+                        <p>Usuario: admin</p>
+                        <p>Contraseña: admin123</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="main-app" class="main-app" style="display: none;">
+            <!-- Sidebar Overlay -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li><a href="#" data-section="caja" class="nav-link active"><i class="bi bi-cart3"></i> Punto de Venta</a></li>
+                        <li><a href="#" data-section="dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        <li><a href="#" data-section="suministros" class="nav-link"><i class="bi bi-box-seam"></i> Suministros</a></li>
+                        <li><a href="#" data-section="stock" class="nav-link"><i class="bi bi-clipboard-data"></i> Control Stock</a></li>
+                        <li><a href="#" data-section="proveedores" class="nav-link"><i class="bi bi-building"></i> Proveedores</a></li>
+                        <li><a href="#" data-section="pagos" class="nav-link"><i class="bi bi-credit-card"></i> Pagos</a></li>
+                        <li><a href="#" data-section="cuentas" class="nav-link"><i class="bi bi-calculator"></i> Cuentas</a></li>
+                        <li><a href="#" data-section="reportes" class="nav-link"><i class="bi bi-graph-up"></i> Reportes</a></li>
+                        <li><a href="#" data-section="usuarios" class="nav-link admin-only"><i class="bi bi-people"></i> Usuarios</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Punto de Venta (Página de Inicio) -->
+                <section id="caja-section" class="content-section active">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h2><i class="bi bi-cart3"></i> Punto de Venta</h2>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success" id="open-session-btn">
+                                            <i class="bi bi-play-circle"></i> Abrir Sesión
+                                        </button>
+                                        <button class="btn btn-danger" id="close-session-btn" style="display: none;">
+                                            <i class="bi bi-stop-circle"></i> Cerrar Sesión
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Session Info -->
+                        <div id="session-info" class="row mb-4" style="display: none;">
+                            <div class="col-12">
+                                <div class="card bg-dark border-success">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success">
+                                            <i class="bi bi-check-circle"></i> Sesión Activa
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="mb-1"><strong>Monto inicial:</strong> $<span id="initial-amount">0</span></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="mb-1"><strong>Ventas del día:</strong> $<span id="daily-sales">0</span></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="mb-1"><strong>Total en caja:</strong> $<span id="total-in-cash">0</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sales Interface -->
+                        <div class="row">
+                            <!-- Product Selection -->
+                            <div class="col-lg-8">
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-search"></i> Seleccionar Productos</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Search Bar -->
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-secondary border-secondary">
+                                                    <i class="bi bi-search"></i>
+                                                </span>
+                                                <input type="text" class="form-control bg-dark border-secondary text-light" 
+                                                       id="product-search" placeholder="Buscar productos...">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Products Grid -->
+                                        <div id="products-grid" class="row g-3">
+                                            <!-- Products will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Shopping Cart -->
+                            <div class="col-lg-4">
+                                <div class="card bg-dark border-primary">
+                                    <div class="card-header bg-primary">
+                                        <h5 class="mb-0"><i class="bi bi-cart3"></i> Carrito de Compras</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Cart Items -->
+                                        <div id="cart-items" class="mb-3" style="max-height: 300px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="bi bi-cart-x fs-1"></i>
+                                                <p>Carrito vacío</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Cart Summary -->
+                                        <div class="border-top pt-3">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Subtotal:</span>
+                                                <span id="cart-subtotal">$0.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Descuento:</span>
+                                                <span id="cart-discount">$0.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-3 fs-5 fw-bold">
+                                                <span>Total:</span>
+                                                <span id="cart-total">$0.00</span>
+                                            </div>
+
+                                            <!-- Payment Method -->
+                                            <div class="mb-3">
+                                                <label class="form-label">Método de Pago</label>
+                                                <select class="form-select bg-dark border-secondary text-light" id="payment-method">
+                                                    <option value="efectivo">Efectivo</option>
+                                                    <option value="tarjeta">Tarjeta</option>
+                                                    <option value="transferencia">Transferencia</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Customer Info -->
+                                            <div class="mb-3">
+                                                <label class="form-label">Cliente (Opcional)</label>
+                                                <input type="text" class="form-control bg-dark border-secondary text-light" 
+                                                       id="customer-name" placeholder="Nombre del cliente">
+                                            </div>
+
+                                            <!-- Action Buttons -->
+                                            <div class="d-grid gap-2">
+                                                <button class="btn btn-success btn-lg" id="process-sale" disabled>
+                                                    <i class="bi bi-check-circle"></i> Procesar Venta
+                                                </button>
+                                                <button class="btn btn-outline-secondary" id="clear-cart">
+                                                    <i class="bi bi-trash"></i> Limpiar Carrito
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Sales -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-clock-history"></i> Ventas Recientes</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Número</th>
+                                                        <th>Cliente</th>
+                                                        <th>Total</th>
+                                                        <th>Método</th>
+                                                        <th>Fecha</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="recent-sales-table">
+                                                    <!-- Recent sales will be loaded here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dashboard -->
+                <section id="dashboard-section" class="content-section">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+                            </div>
+                        </div>
+
+                        <!-- KPI Cards -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-gradient text-white border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-uppercase mb-1">Total Productos</h6>
+                                                <h2 class="mb-0" id="total-products">0</h2>
+                                                <small class="text-white-50">En inventario</small>
+                                            </div>
+                                            <div class="align-self-center">
+                                                <i class="bi bi-box-seam fs-1 opacity-75"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-3" style="height: 4px;">
+                                            <div class="progress-bar bg-white" id="products-progress" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-gradient text-white border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-uppercase mb-1">Ventas del Día</h6>
+                                                <h2 class="mb-0" id="daily-sales-amount">$0</h2>
+                                                <small class="text-white-50">Ingresos totales</small>
+                                            </div>
+                                            <div class="align-self-center">
+                                                <i class="bi bi-graph-up fs-1 opacity-75"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-3" style="height: 4px;">
+                                            <div class="progress-bar bg-white" id="sales-progress" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-gradient text-white border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-uppercase mb-1">Stock Bajo</h6>
+                                                <h2 class="mb-0" id="low-stock-products">0</h2>
+                                                <small class="text-white-50">Requieren restock</small>
+                                            </div>
+                                            <div class="align-self-center">
+                                                <i class="bi bi-exclamation-triangle fs-1 opacity-75"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-3" style="height: 4px;">
+                                            <div class="progress-bar bg-white" id="stock-progress" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-gradient text-white border-0" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-uppercase mb-1">Balance Mensual</h6>
+                                                <h2 class="mb-0" id="monthly-balance">$0</h2>
+                                                <small class="text-white-50">Ingresos - Egresos</small>
+                                            </div>
+                                            <div class="align-self-center">
+                                                <i class="bi bi-wallet2 fs-1 opacity-75"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-3" style="height: 4px;">
+                                            <div class="progress-bar bg-white" id="balance-progress" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row -->
+                        <div class="row g-4">
+                            <div class="col-lg-8">
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-bar-chart"></i> Ventas por Día (Últimos 7 días)</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="sales-chart" height="100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-pie-chart"></i> Productos Más Vendidos</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="top-products-list">
+                                            <!-- Top products will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reportes -->
+                <section id="reportes-section" class="content-section">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h2><i class="bi bi-graph-up"></i> Reportes y Analytics</h2>
+                                    <button class="btn btn-primary" id="configure-email-btn">
+                                        <i class="bi bi-envelope-gear"></i> Configurar Email Mensual
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Configuration Card -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card bg-dark border-info">
+                                    <div class="card-header bg-info text-dark">
+                                        <h5 class="mb-0"><i class="bi bi-envelope-gear"></i> Configuración de Email Mensual</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="email-config-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Email Destinatario</label>
+                                                        <input type="email" class="form-control bg-dark border-secondary text-light" 
+                                                               id="email-recipient" placeholder="admin@empresa.com">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Día del Mes para Envío</label>
+                                                        <select class="form-select bg-dark border-secondary text-light" id="email-day">
+                                                            <option value="1">Día 1</option>
+                                                            <option value="15">Día 15</option>
+                                                            <option value="30">Último día del mes</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="email-enabled">
+                                                        <label class="form-check-label" for="email-enabled">
+                                                            Activar envío automático de reportes mensuales
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check-circle"></i> Guardar Configuración
+                                                </button>
+                                                <button type="button" class="btn btn-outline-info" id="test-email-btn">
+                                                    <i class="bi bi-send"></i> Enviar Email de Prueba
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reports Grid -->
+                        <div class="row g-4">
+                            <div class="col-lg-6">
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-calendar-month"></i> Reporte Mensual</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid">
+                                            <button class="btn btn-outline-primary" id="generate-monthly-report">
+                                                <i class="bi bi-file-earmark-pdf"></i> Generar Reporte del Mes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-header">
+                                        <h5><i class="bi bi-graph-down"></i> Análisis de Stock</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid">
+                                            <button class="btn btn-outline-warning" id="generate-stock-report">
+                                                <i class="bi bi-file-earmark-excel"></i> Reporte de Inventario
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Suministros -->
+                <section id="suministros-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Suministros</h2>
+                        <button class="btn-primary" id="add-supply-btn">Agregar Suministro</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Precio Compra</th>
+                                    <th>Precio Venta</th>
+                                    <th>Stock</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplies-table-body">
+                                <!-- Datos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Stock -->
+                <section id="stock-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Control de Stock</h2>
+                        <button class="btn-primary" id="add-movement-btn">Registrar Movimiento</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Suministro</th>
+                                    <th>Cantidad Actual</th>
+                                    <th>Stock Mínimo</th>
+                                    <th>Estado</th>
+                                    <th>Ubicación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-table-body">
+                                <!-- Datos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Proveedores -->
+                <section id="proveedores-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Proveedores</h2>
+                        <button class="btn-primary" id="add-supplier-btn">Agregar Proveedor</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Ciudad</th>
+                                    <th>Días Crédito</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliers-table-body">
+                                <!-- Datos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Pagos -->
+                <section id="pagos-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Pagos</h2>
+                        <button class="btn-primary" id="add-payment-btn">Registrar Pago</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Concepto</th>
+                                    <th>Monto</th>
+                                    <th>Método</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-table-body">
+                                <!-- Datos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Cuentas -->
+                <section id="cuentas-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión Contable</h2>
+                        <button class="btn-primary" id="add-account-btn">Agregar Cuenta</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Saldo Actual</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accounts-table-body">
+                                <!-- Datos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Caja -->
+                <section id="caja-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Punto de Venta</h2>
+                        <button class="btn-primary" id="open-session-btn">Abrir Sesión</button>
+                    </div>
+                    <div class="caja-content">
+                        <div class="session-info" id="session-info" style="display: none;">
+                            <h3>Sesión Activa</h3>
+                            <p>Monto inicial: $<span id="initial-amount">0</span></p>
+                            <p>Ventas del día: $<span id="daily-sales">0</span></p>
+                            <button class="btn-secondary" id="close-session-btn">Cerrar Sesión</button>
+                        </div>
+                        <div class="sales-section">
+                            <h3>Ventas del Día</h3>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Número</th>
+                                            <th>Cliente</th>
+                                            <th>Total</th>
+                                            <th>Método Pago</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sales-table-body">
+                                        <!-- Datos se cargan dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Usuarios (Solo Admin) -->
+                <section id="usuarios-section" class="content-section admin-only">
+                    <div class="section-header">
+                        <h2>Gestión de Usuarios</h2>
+                        <button class="btn-primary" id="add-user-btn">Agregar Usuario</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- Datos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="modal-container" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Modal</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/supplies.js"></script>
+    <script src="js/stock.js"></script>
+    <script src="js/suppliers.js"></script>
+    <script src="js/payments.js"></script>
+    <script src="js/accounts.js"></script>
+    <script src="js/caja.js"></script>
+    <script src="js/users.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
