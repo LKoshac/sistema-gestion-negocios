@@ -14,7 +14,7 @@
 ### 2. Conectar el repositorio local con GitHub
 ```bash
 # Agregar el repositorio remoto (reemplaza USERNAME con tu usuario de GitHub)
-git remote add origin https://github.com/USERNAME/sistema-gestion-negocios.git
+git remote add origin https://github.com/LKoshac/sistema-gestion-negocios.git
 
 # Verificar que se agregó correctamente
 git remote -v
