@@ -388,6 +388,7 @@ fuser -k 3001/tcp
 
 ## 🤝 Contribución
 
+
 ### Cómo Contribuir
 1. Fork del repositorio
 2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
@@ -395,32 +396,5 @@ fuser -k 3001/tcp
 4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 5. Crear Pull Request
 
-### Estándares de Código
-- **ESLint**: Linting de JavaScript
-- **Prettier**: Formateo de código
-- **Conventional Commits**: Mensajes de commit
-- **JSDoc**: Documentación de funciones
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 👥 Equipo
-
-- **Desarrollador Principal**: Sistema de Gestión de Negocios
-- **Arquitectura**: Node.js + Express + SQLite
-- **Frontend**: JavaScript Vanilla + CSS3
-- **Diseño**: Tema Oscuro Moderno
-
-## 📞 Soporte
-
-Para soporte técnico o consultas:
-- **Issues**: Crear issue en GitHub
-- **Documentación**: Ver `MANUAL_USUARIO.md`
-- **Email**: [tu-email@ejemplo.com]
-
----
-
-**¡Gracias por usar nuestro Sistema de Gestión de Negocios! 🚀**
-
-*Desarrollado con ❤️ para hacer la gestión de negocios más fácil y eficiente.*
+- Lnp.
+Gran parte de la documentación fue generada automaticamente.
